@@ -61,6 +61,7 @@ class DirectoryCompletion(object):
         path = os.path.normpath( path ) + self.fs.seq
       else:
         path = os.path.normpath( os.path.dirname(path) ) + self.fs.seq
+    path = path.replace('//', '/')
     return path
 
 if __name__ == "__main__":
