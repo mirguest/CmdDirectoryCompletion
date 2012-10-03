@@ -28,8 +28,11 @@ class DirectoryCompletion(object):
 
     path = self.generate_absolute(line, cwd)
     dirname = self.get_dirname(path)
+    filename = self.get_filename(path, dirname)
 
     result = list( self.fs.list_dir(dirname) )
+
+    text = filename + text
 
     if len(text) > 0:
       result = [i for i in result if i.startswith(text)]
@@ -64,6 +67,9 @@ class DirectoryCompletion(object):
     path = path.replace('//', '/')
     return path
 
+  def get_filename(self, path, dirname):
+    return path[ len(dirname): ]
+
 if __name__ == "__main__":
   from AbstractFileSystem import UnixLikeFileSystem
   ulfs = UnixLikeFileSystem()
@@ -72,3 +78,4 @@ if __name__ == "__main__":
   print dc.parse_text_line("ls", "/bin/", "/home/ihep")
   print dc.parse_text_line(".vim", "", "/home/ihep")
   print dc.parse_text_line("", "", "/home/ihep")
+  print dc.parse_text_line("hyphen", "/home/ihep/a-file-name-with-", "/home/ihep")
