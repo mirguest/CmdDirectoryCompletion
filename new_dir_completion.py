@@ -36,6 +36,7 @@ class DirCompletion(cmd.Cmd):
 
   def complete_ls(self, text, line, begidx, endidx):
     #print
+    #print "LINE: ", line
     result = []
 
     cur_input_line = line.split()
@@ -45,6 +46,7 @@ class DirCompletion(cmd.Cmd):
       #print "cur_path:", cur_path
 
     result = self.dc.parse_text_line(text, cur_path, os.getcwd() )
+    #print result
 
     return result
 

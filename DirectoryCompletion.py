@@ -2,6 +2,9 @@
 # -*- coding:utf-8 -*-
 # author: lintao
 
+import readline
+readline.set_completer_delims(' \t\n`~!@#$%^&*()=+[{]}\\|;:\'",<>/?')
+
 import os.path
 
 class DirectoryCompletion(object):
@@ -24,6 +27,9 @@ class DirectoryCompletion(object):
         and ``/home/ihep/work/initrd.lz`` is the line.
     """
 
+    #print
+    #print type(text), type(line)
+
     result = []
 
     path = self.generate_absolute(line, cwd)
@@ -31,13 +37,13 @@ class DirectoryCompletion(object):
     filename = self.get_filename(path, dirname)
 
     result = list( self.fs.list_dir(dirname) )
+    result2 = [i for i in result if i.startswith(filename)]
+    #print result
+    #print result2
 
-    text = filename + text
 
-    if len(text) > 0:
-      result = [i for i in result if i.startswith(text)]
 
-    return result 
+    return result2 
 
   # check absolute path
   def check_absolute(self, path):
@@ -68,7 +74,15 @@ class DirectoryCompletion(object):
     return path
 
   def get_filename(self, path, dirname):
-    return path[ len(dirname): ]
+    if self.check_absolute(path):
+      # if it is the absolute path,
+      # return dirname
+      if (path.endswith( self.fs.seq )):
+        path = ""
+      else:
+        path = os.path.normpath( os.path.basename(path) ) #+ self.fs.seq
+    path = path.replace('//', '/')
+    return path
 
 if __name__ == "__main__":
   from AbstractFileSystem import UnixLikeFileSystem
@@ -78,4 +92,3 @@ if __name__ == "__main__":
   print dc.parse_text_line("ls", "/bin/", "/home/ihep")
   print dc.parse_text_line(".vim", "", "/home/ihep")
   print dc.parse_text_line("", "", "/home/ihep")
-  print dc.parse_text_line("hyphen", "/home/ihep/a-file-name-with-", "/home/ihep")
